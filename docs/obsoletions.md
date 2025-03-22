@@ -7,6 +7,10 @@ Following [the deprecation policy of TileDB Embedded][core-deprecation], obsolet
 |Diagnostic codes|Deprecated in version|Removed in version|
 |----------------|---------------------|------------------|
 |[`TILEDB0001`](#TILEDB0001) …[`TILEDB0011`](#TILEDB0011)|5.3.0|5.5.0|
+|[`TILEDB0012`](#TILEDB0012) …[`TILEDB0013`](#TILEDB0013)|5.7.0|5.9.0|
+|[`TILEDB0014`](#TILEDB0014) …[`TILEDB0014`](#TILEDB0014)|5.8.0|5.10.0|
+|[`TILEDB0015`](#TILEDB0015) …[`TILEDB0015`](#TILEDB0015)|5.13.0|5.15.0|
+|[`TILEDB0015`](#TILEDB0016) …[`TILEDB0015`](#TILEDB0016)|5.17.0|5.19.0|
 
 ## `TILEDB0001` - Enum value names that start with `TILEDB_` were replaced with C#-friendly names.
 
@@ -298,5 +302,80 @@ Some of these methods were renamed or had their signature changed (for example t
 ### Recommended action
 
 Instead of setting ranges and subarrays on the `Query`, create and configure a `Subarray` object, and assign it to the query using the `Query.SetSubarray` method.
+
+## `TILEDB0012` - Members of the `TileDB.Interop` namespace will become internal in a future version and should not be used by user code.
+
+<a name="TILEDB0012"></a>
+
+Some APIs in the `TileDB.Interop` namespace that were inadvertently removed in version 5.3.0 were reintroduced in version 5.7.0. They are marked as obsolete and hidden from IntelliSense and will be removed from the public API for good in version 5.9.0. They were also reintroduced in patch releases 5.3.1 and 5.4.1, obsoleted under the [`TILEDB0003`](#TILEDB0003) code.
+
+### Version introduced
+
+5.7.0
+
+### Recommended action
+
+The obsoleted APIs fall into the following categories:
+
+- The `MarshaledString` and `MarshaledStringOut` types are used to help convert strings from and to ASCII and pass them to native code. If you are using them in user code for native code interop, you should use .NET's [built-in P/Invoke](https://learn.microsoft.com/en-us/dotnet/standard/native-interop/charset) marshaling instead. For other kinds of encoding conversions, you should use APIs from the [`System.Text.Encoding`](https://learn.microsoft.com/en-us/dotnet/api/system.text.encoding) class.
+- The `__sFile` and `LibC` types have no members and there is no reason to use them anyway.
+- The types that derive from `SafeHandle` are used to safely manage the lifetime of native TileDB objects. With the APIs in the `TileDB.CSharp` namespace providing broad coverage of TileDB's functionalities while also being safer and easier to sue, these types provide limited utility. You should use the APIs in the `TileDB.CSharp` namespace instead.
+- Types with the name `tiledb_***_t` were made public again only to support the APIs of the safe handles above. They have little other use on their own. You should use APIs in the `TileDB.CSharp` namespace instead.
+
+## `TILEDB0013` - The `EnumUtils.TypeToDataType` and `EnumUtils.DataTypeToType` methods are obsolete and will be removed in a future version.
+
+<a name="TILEDB0013"></a>
+
+The `EnumUtils.TypeToDataType` and `EnumUtils.DataTypeToType` methods convert between TileDB data types and .NET types. Given that there is no one-to-one correspondence between these two and for legacy reasons, these methods sometimes return wrong results and were obsoleted.
+
+### Version introduced
+
+5.7.0
+
+### Recommended action
+
+If you are performing queries on arrays of unknown schema, you can use the `Query.UnsafeSetDataBuffer` and `Query.UnsafeSetWriteDataBuffer` methods to set a data buffer to a query without type validation.
+
+## `TILEDB0014` - Members of the `TileDB.Interop` namespace will become internal in a future version and should not be used by user code.
+
+<a name="TILEDB0014"></a>
+
+Some APIs in the `TileDB.Interop` namespace that were inadvertently removed in version 5.3.0 were reintroduced in version 5.7.0. They are marked as obsolete in version 5.8.0 and hidden from IntelliSense and will be removed from the public API for good in version 5.10.0. They were also reintroduced in patch releases 5.3.1 and 5.4.1, obsoleted under the [`TILEDB0003`](#TILEDB0003) code.
+
+### Version introduced
+
+5.8.0
+
+### Recommended action
+
+Stop using the obsoleted APIs. No other public API of `TileDB.CSharp` depends on them.
+
+## `TILEDB0015` - `ConfigIterator` is obsolete.
+
+<a name="TILEDB0015"></a>
+
+The `ConfigIterator` class is unintuitive to use. In version 5.13.0 it was marked as obsolete and replaced by `Config` implementing `IEnumerable<KeyValuePair<string,string>>`.
+
+### Version introduced
+
+5.13.0
+
+### Recommended action
+
+Replace uses of `ConfigIterator` with enumerating the `Config` object directly using a `foreach` loop or LINQ. To get only the config options that start with a specific prefix, call the `Config.EnumerateOptions` method and enumerate its returned object.
+
+## `TILEDB0016` - `File` is obsolete.
+
+<a name="TILEDB0016"></a>
+
+The TileDB filestore APIs, exposed by the `TileDB.CSharp.File` class are obsolete and will be removed in a future version.
+
+### Version introduced
+
+5.17.0
+
+### Recommended action
+
+There is no direct replacement. You can manually store files in TileDB by representing them as one-dimensional dense arrays of bytes.
 
 [core-deprecation]: https://github.com/TileDB-Inc/TileDB/blob/dev/doc/policy/api_changes.md

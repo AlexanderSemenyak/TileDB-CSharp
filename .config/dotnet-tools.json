@@ -3,13 +3,13 @@
   "isRoot": true,
   "tools": {
     "clangsharppinvokegenerator": {
-      "version": "16.0.0",
+      "version": "18.1.0.3",
       "commands": [
         "ClangSharpPInvokeGenerator"
       ]
     },
     "docfx": {
-      "version": "2.60.2",
+      "version": "2.78.2",
       "commands": [
         "docfx"
       ]

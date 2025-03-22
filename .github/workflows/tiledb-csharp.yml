@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, 'release/*' ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, 'release/*' ]
   workflow_dispatch:
   workflow_call:
 
@@ -13,18 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checks out repository
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Remove existing .NET versions
-        shell: bash
-        run: |
-          rm -rf $DOTNET_ROOT
-
-      - name: Set up .NET SDK from global.json
-        uses: actions/setup-dotnet@v3
-
-      - name: Display .NET versions
-        run: dotnet --info
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.4xx
 
       # Package validation runs as part of packing.
       - name: Dotnet pack for TileDB.CSharp
@@ -40,18 +33,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       # Checks out repository
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Remove existing .NET versions
-        shell: bash
-        run: |
-          rm -rf $DOTNET_ROOT
-
-      - name: Set up .NET SDK from global.json
-        uses: actions/setup-dotnet@v3
-
-      - name: Display .NET versions
-        run: dotnet --info
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.4xx
 
       # DotNet build
       - name: Dotnet build for TileDB.CSharp
@@ -63,12 +49,7 @@ jobs:
         run: |
           dotnet test -c Release tests/TileDB.CSharp.Test
 
-      - name: Run examples (.NET 5)
+      - name: Run examples
         shell: bash
         run: |
-          find examples/ -name *.csproj | xargs -I{} dotnet run --project {} -f net5.0
-
-      - name: Run examples (.NET 6)
-        shell: bash
-        run: |
-          find examples/ -name *.csproj | xargs -I{} dotnet run --project {} -f net5.0
+          find examples/ -name *.csproj | xargs -I{} dotnet run --project {} -f net6.0

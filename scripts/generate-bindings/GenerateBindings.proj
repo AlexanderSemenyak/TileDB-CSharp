@@ -9,34 +9,48 @@
     <InputDir>$(TempDir)/download/include</InputDir>
     <RspFile>$(TempDir)/generate.rsp</RspFile>
     <AccessSpecifier>%2A=internal</AccessSpecifier>
+    <GitHubOrganization>TileDB-Inc</GitHubOrganization>
   </PropertyGroup>
 
   <ItemGroup>
     <ConfigOption Include="latest-codegen" />
     <ConfigOption Include="unix-types" />
     <ConfigOption Include="multi-file" />
+    <!-- <Define Include="TILEDB_REMOVE_DEPRECATIONS" /> -->
     <InputFile Include="tiledb/tiledb_experimental.h" />
     <TraversePaths Include="$(InputDir)/**/*.h" />
-    <RemapHandleType Include="buffer" />
+    <RemapHandleType Include="array" />
+    <RemapHandleType Include="array_schema" />
+    <RemapHandleType Include="attribute" />
     <RemapHandleType Include="buffer_list" />
-    <RemapHandleType Include="config" />
+    <RemapHandleType Include="buffer" />
+    <RemapHandleType Include="channel_operation" />
+    <RemapHandleType Include="channel_operator" />
     <RemapHandleType Include="config_iter" />
+    <RemapHandleType Include="config" />
     <RemapHandleType Include="ctx" />
-    <RemapHandleType Include="dimension" />
     <RemapHandleType Include="dimension_label" />
+    <RemapHandleType Include="dimension" />
+    <RemapHandleType Include="domain" />
+    <RemapHandleType Include="enumeration" />
     <RemapHandleType Include="error" />
-    <RemapHandleType Include="filter" />
     <RemapHandleType Include="filter_list" />
+    <RemapHandleType Include="filter" />
+    <RemapHandleType Include="fragment_info" />
     <RemapHandleType Include="group" />
+    <RemapHandleType Include="query_channel" />
+    <RemapHandleType Include="query_field" />
     <RemapHandleType Include="string" />
-    <RemapHandleType Include="vfs" />
+    <RemapHandleType Include="subarray" />
     <RemapHandleType Include="vfs_fh" />
+    <RemapHandleType Include="vfs" />
     <Remap Include="@(RemapHandleType->'tiledb_%(Identity)_handle_t=tiledb_%(Identity)_t')" />
     <Remap Include="tiledb_experimental_query_status_details_t=tiledb_query_status_details_t" />
-    <ExcludeDump Include="attribute" />
-    <ExcludeDump Include="domain" />
-    <ExcludeDump Include="dimension" />
     <ExcludeDump Include="array_schema" />
+    <ExcludeDump Include="attribute" />
+    <ExcludeDump Include="dimension" />
+    <ExcludeDump Include="domain" />
+    <ExcludeDump Include="enumeration" />
     <ExcludeDump Include="stats" />
     <ExcludeDump Include="stats_raw" />
     <ExcludeDump Include="fragment_info" />
@@ -61,7 +75,7 @@
       Text="Version and VersionTag must be specified." />
 
     <PropertyGroup>
-      <DownloadUrl>https://github.com/TileDB-Inc/TileDB/releases/download/$(Version)/TileDB-windows-x86_64-$(Version)-$(VersionTag).zip</DownloadUrl>
+      <DownloadUrl>https://github.com/$(GitHubOrganization)/TileDB/releases/download/$(Version)/TileDB-windows-x86_64-$(Version)-$(VersionTag).zip</DownloadUrl>
       <ExtractDir>$(TempDir)/download</ExtractDir>
     </PropertyGroup>
     <DownloadFile
@@ -83,6 +97,7 @@
     <ItemGroup>
       <PInvokeGeneratorArg Remove="@(PInvokeGeneratorArg)" />
       <PInvokeGeneratorArg Include="--config;@(ConfigOption)" />
+      <PInvokeGeneratorArg Include="@(Define->'-D%(Identity)')" />
       <PInvokeGeneratorArg Include="--methodClassName;$(MethodClass)" />
       <PInvokeGeneratorArg Include="--namespace;$(Namespace)" />
       <PInvokeGeneratorArg Include="--file" />

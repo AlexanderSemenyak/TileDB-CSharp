@@ -7,7 +7,7 @@
     <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
     <UseCurrentRuntimeIdentifier>true</UseCurrentRuntimeIdentifier>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<VSTestLogger Condition="'$(GITHUB_ACTIONS)' != ''">GitHubActions</VSTestLogger>
+    <VSTestLogger Condition="'$(GITHUB_ACTIONS)' != ''">GitHubActions</VSTestLogger>
   </PropertyGroup>
 
   <ItemGroup>
@@ -20,5 +20,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\sources\TileDB.CSharp\TileDB.CSharp.csproj" />
+    <!-- To run tests with a TileDB patch, uncomment the following lines: -->
+    <!-- 
+    <PackageReference Include="TileDB.Native" />
+    <PackageVersion Update="TileDB.Native" Version="<version>" />
+    -->
   </ItemGroup>
 </Project>
